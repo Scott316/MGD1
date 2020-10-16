@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+</head>
+<body>
+    <body style="background-color:#000000; "></body></body>
+    <canvas id="canvasForTheGame"></canvas>
+</body>
+</html>
+<script>
+	var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+	window.requestAnimationFrame = requestAnimationFrame;
+
+	var canvas = document.getElementById("canvasForTheGame");
+	var width = 1500;
+	var height = 700;
+	var ctx = canvas.getContext("2d");
+	var player = {
+		x: width / 2,
+		y: height - 15,
+		width: 5,
+		height: 5,
+		velX: 0,
+		velY: 0
+	};
+	var keys = [];
+	var friction = 0.8;
+
+
+    window.addEventListener("load", function () {
+        start();
+        update();
+        animationFrame();
+    });
+
+    function start() {
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.font = "30px Comic Sans MS";
+        ctx.fillStyle = "red";
+        ctx.textAlign = "center";
+        ctx.fillText("Archie's Parties are always the best", 750, 20);
+    }
+
+	function update() {
+        if (keys[40]) {
+          if (player.y < (canvas.height - player.height - 20))
+            player.velY++;
+        }
+        if (keys[38]) {
+            if (player.y > 40)
+            player.velY--;
+        }
+        if (keys[39]) {
+            if (player.x < (canvas.width - player.width - 20))
+            player.velX++;
+        }
+        if (keys[37]) {
+            if (player.x > player.width)
+            player.velX--;
+        }
+
+        player.velX *= friction;
+        player.velY *= friction;
+        player.x += player.velX;
+        player.y += player.velY;
+
+        ctx.clearRect(0, 20, width, height);
+        ctx.beginPath();
+        ctx.fill();
+        ctx.fillStyle = "red";
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+   
+
+
+        requestAnimationFrame(update);
+
+    }
+
+ 
+    document.body.addEventListener("keydown", function (e) {
+        keys[e.keyCode] = true;
+    });
+
+    document.body.addEventListener("keyup", function (e) {
+        keys[e.keyCode] = false;w  
+    });
+
+
+</script>
+
