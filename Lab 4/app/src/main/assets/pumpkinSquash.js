@@ -96,7 +96,7 @@ tempPumpkin = new aPumpkin(rndX, rndY);
 }
 
 function drawPumpkin(){
-canvasContext.drawPumpkin(imageToDraw, tempPumpkin.xPos, tempPumpkin.yPos);
+canvasContext.drawImage(imageToDraw, tempPumpkin.xPos, tempPumpkin.yPos);
 }
 
 function collisionDetection(){
