@@ -47,28 +47,24 @@ var enemyimg = new Image();
 var isKeyPressed = false;
 var level = 5;
 
-
+var buttonX = [33, 100];
+var buttonY = [350, 71];
+var buttonWidth = [44, 44];
+var buttonHeight = [44, 44];
 function load() {
 console.log("tests");
 }
 
 window.addEventListener("load", function () {
 init();
-load();
-
-start();
-update();
+showMenu();
 });
 
 function init()
 {
-   if (canvas.getContext)
-   {
-
-     window.addEventListener("touchstart", touchingDown, false);
-     window.addEventListener("touchmove", touchXY, true);
-     window.addEventListener("touchend", touchUp, false);
-   }
+   canvas.width = width;
+   canvas.height = height;
+   buttonClicked = 0;
 }
 
 
@@ -85,13 +81,21 @@ isKeyPressed = false;
 
 
 function start() {
-canvas.width = width;
-canvas.height = height;
 img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
 soundEffect = new sound("Yoda.mp3")
 themeMusic = new sound("Circle Of Life.mp3");
 themeMusic.play();
+
+if (canvas.getContext)
+   {
+
+     window.addEventListener("touchstart", touchingDown, false);
+     window.addEventListener("touchmove", touchXY, true);
+     window.addEventListener("touchend", touchUp, false);
+   }
+
+update();
 }
 
 function update() {
