@@ -17,7 +17,7 @@ velY: 0
 };
 
 var enemy = {
-x: width / 2,
+x: width / 1,
 y: height / 1.65,
 width: 100,
 height: 100,
@@ -27,7 +27,8 @@ velY: 0
 
 var keys = [];
 var friction = 0.8;
-
+var themeMusic;
+var soundEffect;
 var startTimeMS = 0;
 var frameX = 0;
 var frameXMax = 3;
@@ -84,18 +85,14 @@ isKeyPressed = false;
 
 
 function start() {
-
 canvas.width = width;
 canvas.height = height;
-
-
-
 img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
+soundEffect = new sound("Yoda.mp3")
+themeMusic = new sound("Circle Of Life.mp3");
+themeMusic.play();
 }
-
-
-
 
 function update() {
 ctx.clearRect(0, 20, width, height);
@@ -114,6 +111,9 @@ player.velX++;
 
 }
 
+if(keys[86]){
+soundEffect.play();
+}
 
 if (keys[65] && player.x > player.width) {
 player.velX--;
@@ -150,6 +150,21 @@ enemy.y += enemy.velY;
 
 requestAnimationFrame(update);
 
+}
+
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
 }
 
 function animationFrame() {
