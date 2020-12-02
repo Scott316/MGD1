@@ -127,15 +127,19 @@ player.y += player.velY;
 
 
 
-if (isKeyPressed) {
+if (keys[65] || keys[68] || keys[83] || keys[87]) {
 animationFrame();
 ctx.drawImage(img, spriteWidth * frameX, spriteHeight * frameY, spriteWidth, spriteHeight, player.x, player.y, player.width, player.height);
 } else
 ctx.drawImage(img, spriteWidth * 2, spriteHeight * 1, spriteWidth, spriteHeight, player.x, player.y, player.width, player.height);
 
-ctx.drawImage(enemyimg,  enemySpritewidth * 2, enemySpriteHeight * 1,  enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
+
 if (enemy.x > enemy.width) {
+animationFrame();
+ctx.drawImage(enemyimg, enemySpritewidth * frameX, enemySpriteHeight * frameY, enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 enemy.velX--;
+} else {
+ctx.drawImage(enemyimg,  enemySpritewidth * 2, enemySpriteHeight * 1,  enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 }
 
 
