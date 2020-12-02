@@ -48,6 +48,17 @@
     var imgCrate = new Image();
     var boxes = [];
 
+var buttonX = [33, 100];
+var buttonY = [71, 71];
+var buttonWidth = [44, 44];
+var buttonHeight = [44, 44];
+
+var mouseX;
+var mouseY;
+var playImage = new Image();
+var quit = new Image();
+
+var ButtonClicked;
 
     //canvas.width = width;
     //canvas.height = height;
@@ -57,10 +68,8 @@
     }
 
     window.addEventListener("load", function () {
-        load();
-        start();
-        update();
-        colCheck(shapeA, shapeB);
+    init();
+        showMenu();
     });
 
 
@@ -74,18 +83,22 @@
         isKeyPressed = false;
     });
 
+function init(){
+canvas.width = width;
+canvas.height = height;
 
+buttonClicked = 0;
+}
 
-    function start() {
-
-        canvas.width = width;
-        canvas.height = height;
+    function startGame() {
 
         ctx.font = "30px Comic Sans MS";
         ctx.fillStyle = "yellow";
         ctx.textAlign = "center";
         ctx.fillText("Hello World", 725, 20);
 
+
+        img.src = 'braidSpritesheet.png';
 
         img.src = 'braidSpritesheet.png';
         imgCrate.src = 'RTS_Crate_0.png';
@@ -103,6 +116,7 @@
             height: 50
         });
 
+         update();
     }
 
 
@@ -161,6 +175,67 @@
 
     }
 
+function showMenu(){
+playImage.src = "playbutton.png";
+playImage.addEventListener('load', e => { ctx.drawImage(playImage, buttonX[0], buttonY[0], buttonWidth[0], buttonHeight[0]);
+});
+
+quit.src = "quitbutton.png";
+quit.addEventListener('load', e => {
+ctx.drawImage(quit, buttonX[1], buttonY[1], buttonWidth[1], buttonHeight[1]);
+});
+canvas.addEventListener("mousemove", checkPos);
+canvas.addEventListener("mouseup", checkClick);
+};
+
+HTMLCanvasElement.prototype.relMouseCoords = function (event) {
+var totalOffsetX = 0;
+var totalOffsetY = 0;
+var canvasX = 0;
+var canvasY = 0;
+var currentElement = this;
+
+do {
+totalOffsetX += currentElement.offsetLeft;
+totalOffsetY += currentElement.offsetTop;
+}
+while (currentElement = currentElement.offsetParent)
+
+canvasX = event.pageX - totalOffsetX;
+canvasY = event.pageY - totalOffsetY;
+
+//fix for variable canvas width
+canvasX = Math.round(canvasX * (this.width / this.offsetWidth) );
+canvasY = Math.round(canvasY * (this.height / this.offsetHeight) );
+
+return {x: canvasX, y: canvasY};
+}
+
+function checkClick(mouseEvent){
+if(mouseX > buttonX[0] && mouseX < (buttonX[0] + buttonWidth[0])){
+if(mouseY > buttonY[0] && mouseY < (buttonY[0] + buttonHeight[0])){
+buttonClicked = 1;
+startGame();
+}
+}
+
+if(mouseX > buttonX[1] && mouseX < (buttonX[1] + buttonWidth[1])){
+if(mouseY > buttonY[1] && mouseY < (buttonY[1] + buttonHeight[1])){
+buttonClicked = 2;
+quitGame();
+}
+}
+
+if(buttonClicked>0){
+canvas.removeEventListener("mousemove", checkPos);
+canvas.removeEventListener("mouseup", checkClick);
+}
+};
+
+function checkPos(event){
+coords = canvas.relMouseCoords(event);
+mouseX = coords.x;
+mouseY = coords.y;
     function animationFrame() {
         var elapsed = (Date.now() - startTimeMS) / 1000;
         startTimeMS = Date.now();
@@ -225,7 +300,9 @@
             }
         }
         return colDir;
-    }	
+    }
+    }
+    
 
 
 
