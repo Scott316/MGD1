@@ -9,7 +9,7 @@ var ctx = canvas.getContext("2d");
 
 var player = {
 x: width / 2,
-y: height / 2,
+y: height / 1.65,
 width: 100,
 height: 100,
 velX: 0,
@@ -18,7 +18,7 @@ velY: 0
 
 var enemy = {
 x: width / 2,
-y: height / 2,
+y: height / 1.65,
 width: 100,
 height: 100,
 velX: 0,
@@ -47,9 +47,6 @@ var isKeyPressed = false;
 var level = 5;
 
 
-//canvas.width = width;
-//canvas.height = height;
-
 function load() {
 console.log("tests");
 }
@@ -71,10 +68,6 @@ function init()
      window.addEventListener("touchmove", touchXY, true);
      window.addEventListener("touchend", touchUp, false);
    }
-
-   //if (soundMgr != null) soundMgr.playMusic(0);
-
-
 }
 
 
@@ -106,27 +99,23 @@ enemyimg.src = 'Alexander.png';
 
 function update() {
 ctx.clearRect(0, 20, width, height);
-if (keys[40] && player.y < (canvas.height - player.height - 20)) {
+
+if (keys[83] && player.y < (canvas.height - player.height - 100)) {
 player.velY++;
 
 }
-
-if (keys[83] && player.y < (canvas.height - player.height - 20)) {
-player.velY++;
-
-}
-if (keys[38] && player.y > 400) {
+if (keys[87] && player.y > 405) {
 player.velY--;
 }
 
 
-if (keys[39] && player.x < (canvas.width - player.width - 20)) {
+if (keys[68] && player.x < (canvas.width - player.width - 20)) {
 player.velX++;
 
 }
 
 
-if (keys[37] && player.x > player.width) {
+if (keys[65] && player.x > player.width) {
 player.velX--;
 
 }
