@@ -47,6 +47,19 @@ var enemyimg = new Image();
 var isKeyPressed = false;
 var level = 5;
 
+//these are for the menu===========================================================================
+var buttonX = [700, 100];
+var buttonY = [350, 350];
+var buttonWidth = [100, 44];
+var buttonHeight = [100, 44];
+
+var mouseX;
+var mouseY;
+var playImage = new Image();
+var quit = new Image();
+
+var buttonClicked;
+//====================================================================================================
 
 function load() {
 console.log("tests");
@@ -54,21 +67,20 @@ console.log("tests");
 
 window.addEventListener("load", function () {
 init();
-load();
-
-start();
-update();
+showMenu();
 });
 
 function init()
 {
-   if (canvas.getContext)
-   {
+   canvas.width = width;
+   canvas.height = height;
 
-     window.addEventListener("touchstart", touchingDown, false);
-     window.addEventListener("touchmove", touchXY, true);
-     window.addEventListener("touchend", touchUp, false);
-   }
+ctx.font = "30px Comic Sans MS";
+ctx.fillStyle = "red";
+ctx.textAlign - "center";
+ctx.fillText("The kissing spoof", 550, 30);
+ctx.fillText("Press S to Move Down", 550, 100);
+   buttonClicked = 0;
 }
 
 
@@ -84,14 +96,21 @@ isKeyPressed = false;
 
 
 
-function start() {
-canvas.width = width;
-canvas.height = height;
+function startGame() {
 img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
 soundEffect = new sound("Yoda.mp3")
 themeMusic = new sound("Circle Of Life.mp3");
 themeMusic.play();
+if (canvas.getContext)
+   {
+
+     window.addEventListener("touchstart", touchingDown, false);
+     window.addEventListener("touchmove", touchXY, true);
+     window.addEventListener("touchend", touchUp, false);
+   }
+
+   update();
 }
 
 function update() {
@@ -227,5 +246,71 @@ function touchXY(evt)
 
    lastPt = {x:evt.touches[0].pageX, y:evt.touches[0].pageY};
 }
-//
 
+function showMenu(){
+playImage.src = "playbutton.png";
+playImage.addEventListener('load', e => {
+ctx.drawImage(playImage, buttonX[0], buttonY[0], buttonWidth[0], buttonHeight[0]);
+});
+
+quit.src = "quitbutton.png";
+quit.addEventListener('load', e => {
+ctx.drawImage(quit, buttonX[1], buttonY[1], buttonWidth[1], buttonHeight[1]);
+});
+canvas.addEventListener("mousemove", checkPos);
+canvas.addEventListener("mouseup", checkClick);
+};
+
+function checkPos(event){
+coords = canvas.relMouseCoords(event);
+mouseX = coords.x;
+mouseY = coords.y;
+}
+
+
+HTMLCanvasElement.prototype.relMouseCoords = function(event){
+var totalOffsetX = 0;
+var totalOffsetY = 0;
+var canvasX = 0;
+var canvasY = 0;
+var currentElement = this;
+
+do{
+totalOffsetX += currentElement.offsetLeft;
+totalOffsetY += currentElement.offsetTop;
+}
+while (currentElement = currentElement.offsetParent)
+
+canvasX = event.pageX - totalOffsetX;
+canvasY = event.pageY - totalOffsetY;
+
+//fix for variable canvas width
+canvasX = Math.round( canvasX * (this.width / this.offsetWidth));
+canvasY = Math.round( canvasY * (this.height / this.offsetHeight));
+
+return {x:canvasX, y:canvasY};
+}
+
+function checkClick(mouseEvent){
+if(mouseX > buttonX[0] && mouseX < (buttonX[0] + buttonWidth[0])){
+if(mouseY > buttonY[0] && mouseY < (buttonY[0] + buttonHeight[0]) ) {
+buttonClicked = 1;
+startGame();
+}
+}
+
+if(mouseX > buttonX[1] && mouseX < (buttonX[1] + buttonWidth[1])){
+if(mouseY > buttonY[1] && mouseY < (buttonY[1] + buttonHeight[1]) ) {
+buttonClicked = 2;
+quitGame();
+}
+}
+ if(buttonClicked>0){
+ canvas.removeEventListener("mousemove", checkPos);
+ canvas.removeEventListener("mouseup", checkClick);
+ }
+}
+
+function quitGame(){
+window.close();
+}
