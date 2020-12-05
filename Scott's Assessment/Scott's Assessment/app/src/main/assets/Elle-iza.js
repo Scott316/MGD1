@@ -48,16 +48,17 @@ var isKeyPressed = false;
 var level = 5;
 
 //these are for the menu===========================================================================
-var buttonX = [700, 100];
+var buttonX = [550, 700];
 var buttonY = [350, 350];
-var buttonWidth = [100, 44];
-var buttonHeight = [100, 44];
+var buttonWidth = [100, 100];
+var buttonHeight = [100, 100];
 
 var mouseX;
 var mouseY;
+
 var playImage = new Image();
 var quit = new Image();
-
+var WASD = new Image();
 var buttonClicked;
 //====================================================================================================
 
@@ -75,11 +76,7 @@ function init()
    canvas.width = width;
    canvas.height = height;
 
-ctx.font = "30px Comic Sans MS";
-ctx.fillStyle = "red";
-ctx.textAlign - "center";
-ctx.fillText("The kissing spoof", 550, 30);
-ctx.fillText("Press S to Move Down", 550, 100);
+
    buttonClicked = 0;
 }
 
@@ -252,6 +249,16 @@ playImage.src = "playbutton.png";
 playImage.addEventListener('load', e => {
 ctx.drawImage(playImage, buttonX[0], buttonY[0], buttonWidth[0], buttonHeight[0]);
 });
+
+WASD.src = "WASD.jpg";
+WASD.addEventListener('load', e => {
+ctx.drawImage(WASD, 450, 50, 150, 100)});
+
+ctx.font = "30px Comic Sans MS";
+ctx.fillStyle = "yellow";
+ctx.textAlign - "center";
+ctx.fillText("Title In Progress", 550, 30);
+ctx.fillText(" - Moves the character", 600, 100);
 
 quit.src = "quitbutton.png";
 quit.addEventListener('load', e => {
