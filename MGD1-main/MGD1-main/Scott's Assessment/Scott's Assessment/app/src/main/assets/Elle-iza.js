@@ -156,7 +156,7 @@ let health = document.getElementById("health")
 health.value -= 1; //Or whatever you want to do with it.
 if (health.value <= 0)
 {
-quitGame();
+showGameOverScreen();
 }
 }
 
@@ -412,9 +412,17 @@ shapeA.x -= oX;
 }
 }
 }
-return colDirl
+return colDir
 }
 */
+
+function showGameOverScreen()
+{
+alert("GAME OVER");
+            document.location.reload();
+            clearInterval(interval); // Needed for Chrome to end game
+}
+
 function quitGame(){
 window.close();
 }
