@@ -48,10 +48,10 @@ var isKeyPressed = false;
 var level = 5;
 var myScore;
 //these are for the menu===========================================================================
-var buttonX = [550, 700, 550, 700];
-var buttonY = [350, 350, 550, 700];
-var buttonWidth = [100, 100, 100, 100];
-var buttonHeight = [100, 100, 100, 100];
+var buttonX = [550, 700];
+var buttonY = [350, 350];
+var buttonWidth = [100, 100];
+var buttonHeight = [100, 100];
 
 var mouseX;
 var mouseY;
@@ -169,6 +169,16 @@ enemy.y += enemy.velY;
 
 requestAnimationFrame(update);
 
+//this is the main line I'm not sure about
+for (var i = 0; i < enemy.width; i++){
+//MISSED OUT CODE HERE CAUSE ENEMY ALREADY DRAWM
+var dir = colDir(player, enemy[i]);
+
+if(dir === "l" || dir == "r"){
+player.velX = 0;
+} else if (dir === "t" || dir === "b")
+player.velY = 0;
+}
 }
 
 function sound(src) {
@@ -263,6 +273,7 @@ ctx.textAlign - "center";
 ctx.fillText("Tit-elle In Progress", 550, 30);
 ctx.fillText(" - Moves the character", 600, 100);
 ctx.fillText(" - Main enemy", 160, 260);
+ctx.fillText(" - Main player", 560, 260)
 
 AlexanderMenu.src = "Alexander Menu.png";
 AlexanderMenu.addEventListener('load', e => {
@@ -328,6 +339,43 @@ quitGame();
  canvas.removeEventListener("mousemove", checkPos);
  canvas.removeEventListener("mouseup", checkClick);
  }
+}
+
+//Basic collider function from lab 3
+function colCheck(shapeA, shapeB){
+//get the vector to check against
+var vX = (shapeA.x + (shapeA.width/2)) - (shapeB.x + (shapeB.width/2)),
+vY = (shapeA.y + (shapeA.height/2)) - (shapeB + (shapeB.height/2)),
+//add the half widths and half heights of the objects
+hWidths = (shapeA.width / 2) + (shapeB.width/2),
+hHeights = (shapeA.height/2) + (shapeB.height/2),
+colDir = null;
+
+//if the x and y are less than the half width or half height, then we must be inside the object, causing a collision
+if(Math.abs(vX) < hWidths && Math.abs(vY) < hHeights){
+//Figures out on which side we are colliding (top, bottom, left or right)
+var oX = hWidths - Math.abs(vX),
+oY = hHeights - Math.abs(vY);
+if (oX >= oY)
+{
+if (vY > 0){
+colDir = "t";
+shapeA.y += oY;
+} else{
+colDir = "b";
+shapeA.y -= oY;
+}
+} else {
+if(vX > 0){
+colDir = "l";
+shapeA.x += oX;
+} else {
+colDir = "r";
+shapeA.x -= oX;
+}
+}
+}
+return colDirl
 }
 
 function quitGame(){
