@@ -103,7 +103,7 @@ var playerBottom = player.y + (player.height);
 var enemyLeft = enemy.x;
 var enemyRight = enemy.x + (enemy.width);
 var enemyTop = enemy.y;
-var enemyBottom = enemy.y + (enemy.height); //needs spanked cause they're very bad boys
+var enemyBottom = enemy.y + (enemy.height);
 var hit = true;
 if ((playerBottom < enemyTop) ||
 (playerTop > enemyBottom) ||
