@@ -46,12 +46,12 @@ var img = new Image();
 var enemyimg = new Image();
 var isKeyPressed = false;
 var level = 5;
-var myScore;
+
 //these are for the menu===========================================================================
-var buttonX = [550, 700, 550, 700];
-var buttonY = [350, 350, 550, 700];
-var buttonWidth = [100, 100, 100, 100];
-var buttonHeight = [100, 100, 100, 100];
+var buttonX = [550, 700];
+var buttonY = [350, 350];
+var buttonWidth = [100, 100];
+var buttonHeight = [100, 100];
 
 var mouseX;
 var mouseY;
@@ -59,8 +59,6 @@ var mouseY;
 var playImage = new Image();
 var quit = new Image();
 var WASD = new Image();
-var AlexanderMenu = new Image();
-var ElleMenu = new Image();
 var buttonClicked;
 //====================================================================================================
 
@@ -77,6 +75,8 @@ function init()
 {
    canvas.width = width;
    canvas.height = height;
+
+
    buttonClicked = 0;
 }
 
@@ -98,7 +98,6 @@ img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
 soundEffect = new sound("Yoda.mp3")
 themeMusic = new sound("Circle Of Life.mp3");
-
 themeMusic.play();
 if (canvas.getContext)
    {
@@ -130,8 +129,6 @@ player.velX++;
 
 if(keys[86]){
 soundEffect.play();
-let health = document.getElementById("health")
-health.value -= 1; //Or whatever you want to do with it.
 }
 
 if (keys[65] && player.x > player.width) {
@@ -260,17 +257,8 @@ ctx.drawImage(WASD, 450, 50, 150, 100)});
 ctx.font = "30px Comic Sans MS";
 ctx.fillStyle = "yellow";
 ctx.textAlign - "center";
-ctx.fillText("Tit-elle In Progress", 550, 30);
+ctx.fillText("Title In Progress", 550, 30);
 ctx.fillText(" - Moves the character", 600, 100);
-ctx.fillText(" - Main enemy", 160, 260);
-
-AlexanderMenu.src = "Alexander Menu.png";
-AlexanderMenu.addEventListener('load', e => {
-ctx.drawImage(AlexanderMenu, 50, 200, 150, 100)});
-
-ElleMenu.src="ElleMenu.png";
-ElleMenu.addEventListener('load', e => {
-ctx.drawImage(ElleMenu, 450, 200, 150, 100)});
 
 quit.src = "quitbutton.png";
 quit.addEventListener('load', e => {
