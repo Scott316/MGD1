@@ -91,7 +91,7 @@ keys[e.keyCode] = false;
 isKeyPressed = false;
 });
 
-
+/*
 //this is based on W3 schools: https://www.w3schools.com/graphics/game_obstacles.asp
 function component()
 {
@@ -114,7 +114,7 @@ hit = false;
 return hit;
 }
 }
-
+*/
 function startGame() {
 img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
