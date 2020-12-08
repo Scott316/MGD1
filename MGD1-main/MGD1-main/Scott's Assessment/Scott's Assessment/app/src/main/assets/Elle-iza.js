@@ -6,7 +6,7 @@ var canvas = document.getElementById("gameCanvas");
 var width = 1400;
 var height = 700;
 var ctx = canvas.getContext("2d");
-
+var score = 0;
 var player = {
 x: width / 2,
 y: height / 1.65,
@@ -138,7 +138,11 @@ ctx.clearRect(0, 20, width, height);
 
 if (keys[83] && player.y < (canvas.height - player.height - 100)) {
 player.velY++;
-
+score += 50;
+if (score >= 100)
+{
+showGameOverScreen();
+}
 }
 if (keys[87] && player.y > 405) {
 player.velY--;
