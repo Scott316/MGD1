@@ -144,6 +144,10 @@ if (keys[87] && player.y > 405) {
 player.velY--;
 }
 
+if (keys[27])
+{
+window.close();
+}
 
 if (keys[68] && player.x < (canvas.width - player.width - 20)) {
 player.velX++;
