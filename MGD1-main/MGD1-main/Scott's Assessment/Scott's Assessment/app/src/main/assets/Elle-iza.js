@@ -92,6 +92,28 @@ isKeyPressed = false;
 });
 
 
+//this is based on W3 schools: https://www.w3schools.com/graphics/game_obstacles.asp
+function component()
+{
+this.collideWith = function(){
+var playerLeft = player.x;
+var playerRight = player.x + (player.width);
+var playerTop = player.y;
+var playerBottom = player.y + (player.height);
+var enemyLeft = enemy.x;
+var enemyRight = enemy.x + (enemy.width);
+var enemyTop = enemy.y;
+var enemyBottom = enemy.y + (enemy.height); //needs spanked cause they're very bad boys
+var hit = true;
+if ((playerBottom < enemyTop) ||
+(playerTop > enemyBottom) ||
+(playerRight < otherLeft) ||
+(playerLeft > enemyRight)){
+hit = false;
+}
+return hit;
+}
+}
 
 function startGame() {
 img.src = 'Elle.png';
@@ -132,6 +154,10 @@ if(keys[86]){
 soundEffect.play();
 let health = document.getElementById("health")
 health.value -= 1; //Or whatever you want to do with it.
+if (health.value <= 0)
+{
+quitGame();
+}
 }
 
 if (keys[65] && player.x > player.width) {
@@ -161,6 +187,14 @@ enemy.velX--;
 ctx.drawImage(enemyimg,  enemySpritewidth * 2, enemySpriteHeight * 1,  enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 }
 
+//w3 schools
+//============================================================================
+//if (player.collideWith(enemy)){
+//soundEffect.play();
+//let health = document.getElementById("health")
+//health.value -= 1; //from stack overflow 
+//}
+//=============================================================================
 
 enemy.velX *= friction;
 enemy.velY *= friction;
@@ -169,9 +203,10 @@ enemy.y += enemy.velY;
 
 requestAnimationFrame(update);
 
+/* This is from Lab 3
 //this is the main line I'm not sure about
 for (var i = 0; i < enemy.width; i++){
-//MISSED OUT CODE HERE CAUSE ENEMY ALREADY DRAWM
+//MISSED OUT CODE HERE CAUSE ENEMY ALREADY DRAWN
 var dir = colDir(player, enemy[i]);
 
 if(dir === "l" || dir == "r"){
@@ -180,7 +215,8 @@ player.velX = 0;
 player.velY = 0;
 }
 }
-
+*/
+}
 function sound(src) {
   this.sound = document.createElement("audio");
   this.sound.src = src;
@@ -341,6 +377,7 @@ quitGame();
  }
 }
 
+/*
 //Basic collider function from lab 3
 function colCheck(shapeA, shapeB){
 //get the vector to check against
@@ -377,7 +414,7 @@ shapeA.x -= oX;
 }
 return colDirl
 }
-
+*/
 function quitGame(){
 window.close();
 }
