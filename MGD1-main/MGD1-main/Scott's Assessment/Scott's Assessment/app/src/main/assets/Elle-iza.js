@@ -48,14 +48,15 @@ var isKeyPressed = false;
 var level = 5;
 var myScore;
 //these are for the menu===========================================================================
-var buttonX = [550, 700];
-var buttonY = [350, 350];
-var buttonWidth = [100, 100];
-var buttonHeight = [100, 100];
+var buttonX = [550, 700, 550, 700];
+var buttonY = [350, 350, 350, 350];
+var buttonWidth = [100, 100, 100, 100];
+var buttonHeight = [100, 100, 100, 100];
 
 var mouseX;
 var mouseY;
 
+var replayButton = new Image();
 var playImage = new Image();
 var quit = new Image();
 var WASD = new Image();
@@ -91,30 +92,6 @@ keys[e.keyCode] = false;
 isKeyPressed = false;
 });
 
-/*
-//this is based on W3 schools: https://www.w3schools.com/graphics/game_obstacles.asp
-function component()
-{
-this.collideWith = function(){
-var playerLeft = player.x;
-var playerRight = player.x + (player.width);
-var playerTop = player.y;
-var playerBottom = player.y + (player.height);
-var enemyLeft = enemy.x;
-var enemyRight = enemy.x + (enemy.width);
-var enemyTop = enemy.y;
-var enemyBottom = enemy.y + (enemy.height);
-var hit = true;
-if ((playerBottom < enemyTop) ||
-(playerTop > enemyBottom) ||
-(playerRight < otherLeft) ||
-(playerLeft > enemyRight)){
-hit = false;
-}
-return hit;
-}
-}
-*/
 function startGame() {
 img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
@@ -135,12 +112,15 @@ if (canvas.getContext)
 
 function update() {
 ctx.clearRect(0, 20, width, height);
+console.log(health.value);
 
 if (keys[83] && player.y < (canvas.height - player.height - 100)) {
 player.velY++;
-score += 50;
+score += 5;
 if (score >= 100)
 {
+console.log("the score "+score);
+
 showGameOverScreen();
 }
 }
@@ -155,22 +135,10 @@ window.close();
 
 if (keys[68] && player.x < (canvas.width - player.width - 20)) {
 player.velX++;
-
-}
-
-if(keys[86]){
-soundEffect.play();
-let health = document.getElementById("health")
-health.value -= 1; //Or whatever you want to do with it.
-if (health.value <= 0)
-{
-showGameOverScreen();
-}
 }
 
 if (keys[65] && player.x > player.width) {
 player.velX--;
-
 }
 
 player.velX *= friction;
@@ -194,37 +162,42 @@ enemy.velX--;
 } else {
 ctx.drawImage(enemyimg,  enemySpritewidth * 2, enemySpriteHeight * 1,  enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 }
-
-//w3 schools
-//============================================================================
-//if (player.collideWith(enemy)){
-//soundEffect.play();
-//let health = document.getElementById("health")
-//health.value -= 1; //from stack overflow 
-//}
-//=============================================================================
-
 enemy.velX *= friction;
 enemy.velY *= friction;
 enemy.x += enemy.velX;
 enemy.y += enemy.velY;
+ctx.beginPath();
+ctx.lineWidth = "4";
+ctx.strokeStyle = "green";
+ctx.rect(player.x, player.y, player.width, player.height);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.lineWidth = "4";
+ctx.strokeStyle = "green";
+ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
+ctx.stroke();
+
+var dir = colCheck(player, enemy);
+if(dir) {
+console.log("player collide with enemy");
+if (health.value > 0)
+{
+health.value -=0.5;
+soundEffect.play();
+}
+
+if (health.value <= 0)
+{
+showGameOverScreen();
+}
+}
+
+
 
 requestAnimationFrame(update);
+}
 
-/* This is from Lab 3
-//this is the main line I'm not sure about
-for (var i = 0; i < enemy.width; i++){
-//MISSED OUT CODE HERE CAUSE ENEMY ALREADY DRAWN
-var dir = colDir(player, enemy[i]);
-
-if(dir === "l" || dir == "r"){
-player.velX = 0;
-} else if (dir === "t" || dir === "b")
-player.velY = 0;
-}
-}
-*/
-}
 function sound(src) {
   this.sound = document.createElement("audio");
   this.sound.src = src;
@@ -265,7 +238,6 @@ frameX = 0;
 frameY = 0;
 }
 }
-
 }
 
 function touchUp(evt)
@@ -278,14 +250,12 @@ function touchUp(evt)
    lastPt = null;
 }
 
-
 function touchingDown(evt)
 {
     evt.preventDefault();
 
     touchXY(evt);
 }
-
 
 function touchXY(evt)
 {
@@ -317,7 +287,7 @@ ctx.textAlign - "center";
 ctx.fillText("Tit-elle In Progress", 550, 30);
 ctx.fillText(" - Moves the character", 600, 100);
 ctx.fillText(" - Main enemy", 160, 260);
-ctx.fillText(" - Main player", 560, 260)
+ctx.fillText(" - Main player", 560, 260);
 
 AlexanderMenu.src = "Alexander Menu.png";
 AlexanderMenu.addEventListener('load', e => {
@@ -385,50 +355,33 @@ quitGame();
  }
 }
 
-/*
-//Basic collider function from lab 3
 function colCheck(shapeA, shapeB){
-//get the vector to check against
-var vX = (shapeA.x + (shapeA.width/2)) - (shapeB.x + (shapeB.width/2)),
-vY = (shapeA.y + (shapeA.height/2)) - (shapeB + (shapeB.height/2)),
-//add the half widths and half heights of the objects
-hWidths = (shapeA.width / 2) + (shapeB.width/2),
-hHeights = (shapeA.height/2) + (shapeB.height/2),
-colDir = null;
+//get the vectors to check against
+var vX = (shapeA.x + (shapeA.width/2)) - (shapeB.x + (shapeB.width / 2)),
+    vY = (shapeA.y + (shapeA.height /2)) - (shapeB.y + (shapeB.height /2)),
+    //add the half widths and half heights of the objects
+    hWidths = (shapeA.width / 2) + (shapeB.width / 2),
+    hHeights = (shapeA.height / 2) + (shapeB.height /2),
+    colDir = null;
 
-//if the x and y are less than the half width or half height, then we must be inside the object, causing a collision
-if(Math.abs(vX) < hWidths && Math.abs(vY) < hHeights){
-//Figures out on which side we are colliding (top, bottom, left or right)
-var oX = hWidths - Math.abs(vX),
-oY = hHeights - Math.abs(vY);
-if (oX >= oY)
-{
-if (vY > 0){
-colDir = "t";
-shapeA.y += oY;
-} else{
-colDir = "b";
-shapeA.y -= oY;
+    //if the x and y vector are less than the half width or half height, then we must be inside the object
+    if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights){
+    colDir = true;
+    }
+    return colDir;
 }
-} else {
-if(vX > 0){
-colDir = "l";
-shapeA.x += oX;
-} else {
-colDir = "r";
-shapeA.x -= oX;
-}
-}
-}
-return colDir
-}
-*/
-
 function showGameOverScreen()
 {
-alert("GAME OVER");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+ctx.clearRect(0, 20, width, height);
+
+ctx.font = "30px Comic Sans MS";
+ctx.fillStyle = "yellow";
+ctx.textAlign - "center";
+ctx.fillText("Game Over!!!!!!!!!!!!!!!!!!", 550, 30);
+ctx.fillText(" YOU DIED", 600, 100);
+ctx.fillText("Player Score: ", 560, 260);
+themeMusic.stop();
+clearInterval(interval); // Needed for Chrome to end game
 }
 
 function quitGame(){
