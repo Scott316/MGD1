@@ -141,6 +141,10 @@ if (keys[65] && player.x > player.width) {
 player.velX--;
 }
 
+if (keys[179]){
+themeMusic.stop();
+}
+
 player.velX *= friction;
 player.velY *= friction;
 player.x += player.velX;
@@ -349,6 +353,20 @@ buttonClicked = 2;
 quitGame();
 }
 }
+
+if(mouseX > buttonX[2] && mouseX < (buttonX[2] + buttonWidth[1])){
+if(mouseY > buttonY[2] && mouseY < (buttonY[2] + buttonHeight[1]) ) {
+buttonClicked = 3;
+replay();
+}
+}
+
+if(mouseX > buttonX[3] && mouseX < (buttonX[3] + buttonWidth[1])){
+if(mouseY > buttonY[3] && mouseY < (buttonY[3] + buttonHeight[1]) ) {
+buttonClicked = 4;
+quitGame();
+}
+}
  if(buttonClicked>0){
  canvas.removeEventListener("mousemove", checkPos);
  canvas.removeEventListener("mouseup", checkClick);
@@ -381,9 +399,25 @@ ctx.fillText("Game Over!!!!!!!!!!!!!!!!!!", 550, 30);
 ctx.fillText(" YOU DIED", 600, 100);
 ctx.fillText("Player Score: ", 560, 260);
 themeMusic.stop();
-clearInterval(interval); // Needed for Chrome to end game
+replayButton.src = "Replay.jpg";
+replayButton.addEventListener('load', e => {
+ctx.drawImage(replayButton, buttonX[2], buttonY[2], buttonWidth[2], buttonHeight[2]);
+});
+
+quit.src = "quitbutton.png";
+quit.addEventListener('load', e => {
+ctx.drawImage(quit, buttonX[3], buttonY[3], buttonWidth[3], buttonHeight[3]);
+});
+canvas.addEventListener("mousemove", checkPos);
+canvas.addEventListener("mouseup", checkClick);
+clearInterval(interval);
+
 }
 
+function replay()
+{
+  showMenu();
+}
 function quitGame(){
 window.close();
 }
