@@ -15,7 +15,7 @@ height: 100,
 velX: 0,
 velY: 0
 };
-
+var healthCollect = new Image();
 var enemy = {
 x: width / 1,
 y: height / 1.65,
@@ -196,9 +196,6 @@ if (health.value <= 0)
 showGameOverScreen();
 }
 }
-
-
-
 requestAnimationFrame(update);
 }
 
@@ -257,21 +254,18 @@ function touchUp(evt)
 function touchingDown(evt)
 {
     evt.preventDefault();
-
     touchXY(evt);
 }
 
 function touchXY(evt)
 {
    evt.preventDefault();
-
    if (lastPt!=null)
    {
       var touchX = evt.touches[0].pageX - canvas.offsetLeft;
       var touchY = evt.touches[0].pageY - canvas.offsetTop;
       player.x = touchX - (player.width / 8);
    }
-
    lastPt = {x:evt.touches[0].pageX, y:evt.touches[0].pageY};
 }
 
