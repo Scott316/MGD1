@@ -105,7 +105,7 @@ document.body.addEventListener("touchcancel", touchUp, false);
 
 resizeCanvas();
 
-bkgdImage = new aSprite(0,0,"Road.png", 100, 0, "Generic");
+bkgdImage = new aSprite(0,0,"Castle.jpg", 100, 0, "Generic");
 theCar = new aSprite(100,0,"Car.png", 0, 0, "Generic");
 theCar.sPos(100,400);
 console.log(theCar.y);

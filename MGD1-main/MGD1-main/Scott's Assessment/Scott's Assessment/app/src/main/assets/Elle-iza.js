@@ -55,7 +55,7 @@ var buttonHeight = [100, 100, 100, 100];
 
 var mouseX;
 var mouseY;
-
+var soundMgr;
 var replayButton = new Image();
 var playImage = new Image();
 var quit = new Image();
@@ -97,7 +97,7 @@ img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
 soundEffect = new sound("Yoda.mp3")
 themeMusic = new sound("Circle Of Life.mp3");
-
+if(soundMgr != null) soundMgr.playMusic(0); //Play main music
 themeMusic.play();
 if (canvas.getContext)
    {
