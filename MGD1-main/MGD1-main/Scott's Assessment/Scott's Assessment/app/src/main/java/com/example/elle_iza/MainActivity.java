@@ -10,6 +10,7 @@ import android.webkit.WebView;
 public class MainActivity extends AppCompatActivity {
 
     WebView webView;
+    iSound iS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +30,14 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
 
         setContentView(R.layout.activity_main);
+        iS = new iSound(getApplicationContext());
 
        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         webView = (WebView)findViewById(R.id.webview1);
-
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("file:///android_asset/Elle_iza.html");
 
-
+        webView.addJavascriptInterface(iS, "soundMgr");
     }
 
 }

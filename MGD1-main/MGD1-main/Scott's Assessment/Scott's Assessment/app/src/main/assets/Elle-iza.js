@@ -1,7 +1,73 @@
+class aSprite{
+constructor(x, y, imageSRC, velx, vely, spType){
+this.zindex = 0;
+this.x = x;
+this.y = y;
+this.vx = velx;
+this.xy = vely;
+this.sType = spType;
+this.sImage = new Image();
+this.sImage.src = imageSRC;
+}
+//Getter
+get xPos(){
+return this.x;
+}
+
+get yPos(){
+return this.y;
+}
+
+//Setter
+set xPos(newX){
+this.x = newX;
+}
+
+set yPos(newY){
+this.y = newY;
+}
+
+//Method
+render()
+{
+canvasContext.drawImage(this.sImage, this.x, this.y);
+}
+//Method
+scrollBK (delta)
+{
+//var xPos = delta * this.vx;
+
+canvasContext.save();
+canvasContext.translate(-delta, 0);
+canvasContext.drawImage(this.sImage, 0, 0);
+canvasContext.drawImage(this.sImage, this.sImage.width, 0);
+canvasContext.restore();
+}
+//Method
+sPos(newX, newY){
+this.x = newX;
+this.y = newY;
+}
+
+//Static Method
+static distance(a, b){
+const dx = a.x - b.x;
+const dy = a.y - b.y;
+
+return Math.hypot(dx, dy);
+}
+
+//Method
+spriteType(){
+console.log('I am a ' + this.sType + ' instance of aSprite!!!!!!!!!!!!!!!');
+}
+}
+
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 window.requestAnimationFrame = requestAnimationFrame;
 
+var canvasContext
 var canvas = document.getElementById("gameCanvas");
 var width = 1400;
 var height = 700;
@@ -15,7 +81,7 @@ height: 100,
 velX: 0,
 velY: 0
 };
-var healthCollect = new Image();
+var soundMgr;
 var enemy = {
 x: width / 1,
 y: height / 1.65,
@@ -79,8 +145,8 @@ function init()
    canvas.width = width;
    canvas.height = height;
    buttonClicked = 0;
+   if(soundMgr != null) soundMgr.playMusic(0);
 }
-
 
 document.body.addEventListener("keydown", function (e) {
 keys[e.keyCode] = true;
@@ -97,7 +163,7 @@ img.src = 'Elle.png';
 enemyimg.src = 'Alexander.png';
 soundEffect = new sound("Yoda.mp3")
 themeMusic = new sound("Circle Of Life.mp3");
-
+player.x = localStorage.getItem("player x position");
 themeMusic.play();
 if (canvas.getContext)
    {
@@ -127,18 +193,24 @@ showGameOverScreen();
 if (keys[87] && player.y > 405) {
 player.velY--;
 }
-
+localStorage.setItem("player x position", player.x);
+localStorage.setItem("player y position", player.y);
+localStorage.setItem("player health", health.value);
+localStorage.setItem("enemy x position", enemy.x);
 if (keys[27])
 {
+
 window.close();
 }
 
 if (keys[68] && player.x < (canvas.width - player.width - 20)) {
 player.velX++;
+player.x ++;
 }
 
 if (keys[65] && player.x > player.width) {
 player.velX--;
+player.x --;
 }
 
 if (keys[179]){
@@ -397,7 +469,7 @@ replayButton.src = "Replay.jpg";
 replayButton.addEventListener('load', e => {
 ctx.drawImage(replayButton, buttonX[2], buttonY[2], buttonWidth[2], buttonHeight[2]);
 });
-
+localStorage.setItem('score', health.value);
 quit.src = "quitbutton.png";
 quit.addEventListener('load', e => {
 ctx.drawImage(quit, buttonX[3], buttonY[3], buttonWidth[3], buttonHeight[3]);
