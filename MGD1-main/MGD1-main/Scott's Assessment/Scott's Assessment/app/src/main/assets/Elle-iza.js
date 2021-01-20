@@ -1,99 +1,63 @@
-class aSprite{
-constructor(x, y, imageSRC, velx, vely, spType){
-this.zindex = 0;
-this.x = x;
-this.y = y;
-this.vx = velx;
-this.xy = vely;
-this.sType = spType;
-this.sImage = new Image();
-this.sImage.src = imageSRC;
-}
-//Getter
-get xPos(){
-return this.x;
-}
-
-get yPos(){
-return this.y;
-}
-
-//Setter
-set xPos(newX){
-this.x = newX;
-}
-
-set yPos(newY){
-this.y = newY;
-}
-
-//Method
-render()
-{
-canvasContext.drawImage(this.sImage, this.x, this.y);
-}
-//Method
-scrollBK (delta)
-{
-//var xPos = delta * this.vx;
-
-canvasContext.save();
-canvasContext.translate(-delta, 0);
-canvasContext.drawImage(this.sImage, 0, 0);
-canvasContext.drawImage(this.sImage, this.sImage.width, 0);
-canvasContext.restore();
-}
-//Method
-sPos(newX, newY){
-this.x = newX;
-this.y = newY;
-}
-
-//Static Method
-static distance(a, b){
-const dx = a.x - b.x;
-const dy = a.y - b.y;
-
-return Math.hypot(dx, dy);
-}
-
-//Method
-spriteType(){
-console.log('I am a ' + this.sType + ' instance of aSprite!!!!!!!!!!!!!!!');
-}
-}
-
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 window.requestAnimationFrame = requestAnimationFrame;
 
 var canvasContext
 var canvas = document.getElementById("gameCanvas");
+//sets the width of the canvas width to 1400 pixels
 var width = 1400;
+//sets the height of the canvas width to 700 pixels
 var height = 700;
 var ctx = canvas.getContext("2d");
-var score = 0;
+//sets a player object to contain the player's information
 var player = {
+//sets this players x position
 x: width / 2,
+//sets the y position
 y: height / 1.65,
+//sets the width
 width: 100,
+//sets the height
 height: 100,
+//sets the starting velocity along the x axis
 velX: 0,
+//sets the starting velocity along the 7 axis
 velY: 0
 };
 var soundMgr;
+//sets a enemy object to contain the enemy's information
 var enemy = {
+//sets the x position
 x: width / 1,
+//sets the y position
 y: height / 1.65,
+//sets the width
 width: 100,
+//sets the height
 height: 100,
+//sets the starting velocity along the x axis
 velX: 0,
+//sets the starting velocity along the y axis
 velY: 0
 };
-
+//sets a collectible object to contain the collectible information
+var collectible = {
+//sets the x position
+x: width /1.5,
+//sets the y position
+y: height / 1.65,
+//sets the width
+width: 100,
+//sets the height
+height: 100
+};
+//sets the health to equal 100
+var health = 100;
 var keys = [];
 var friction = 0.8;
+//sets a variable to manage the theme music
 var themeMusic;
+//sets a variable to manage the sound effects
 var soundEffect;
 var startTimeMS = 0;
 var frameX = 0;
@@ -105,23 +69,32 @@ var frameMax = 9;
 var frameTimer = 0.18;
 var frameTimeMax = 0.2;
 var spriteWidth = 183;
-var spriteHeight = 330;
+var spriteHeight = 310;
 var enemySpritewidth = 307;
 var enemySpriteHeight = 485;
+//sets up an image variable for the player
 var img = new Image();
+//sets up an image variable for the enemy
 var enemyimg = new Image();
+//sets up an image variable for the collectible
+var collectImage = new Image();
 var isKeyPressed = false;
 var level = 5;
-var myScore;
+//USED FOR THE TIMER, EXTENSION MATERIAL////////////////////////////////////////
+//sets the amount of time on the timer at the start
+const minutesAtStart = 2;
+//counts every second involved in the two minutes
+let time = minutesAtStart * 60;
+//END OF EXTENSION MATERIAL ATTEMPT//////////////////////////////////////////////
+//sets the variable scoreAmount to equal 0
+var scoreAmount = 0;
 //these are for the menu===========================================================================
 var buttonX = [550, 700, 550, 700];
 var buttonY = [350, 350, 350, 350];
 var buttonWidth = [100, 100, 100, 100];
 var buttonHeight = [100, 100, 100, 100];
-
 var mouseX;
 var mouseY;
-
 var replayButton = new Image();
 var playImage = new Image();
 var quit = new Image();
@@ -159,114 +132,227 @@ isKeyPressed = false;
 });
 
 function startGame() {
+//sets the source image for the player image
 img.src = 'Elle.png';
+//sets the source image for the collectible image
+collectImage.src = "Health plus.png";
+//sets the source image for the enemy image
 enemyimg.src = 'Alexander.png';
-soundEffect = new sound("Yoda.mp3")
+//loads the sound effect file "Yoda.mp3" using the sound constructor
+soundEffect = new sound("Yoda.mp3");
+//loads the theme music file "Circle Of Life.mp3" using the sound constructor
 themeMusic = new sound("Circle Of Life.mp3");
-player.x = localStorage.getItem("player x position");
+//plays the theme music
 themeMusic.play();
 if (canvas.getContext)
    {
-
      window.addEventListener("touchstart", touchingDown, false);
      window.addEventListener("touchmove", touchXY, true);
      window.addEventListener("touchend", touchUp, false);
    }
 
    update();
+   //COUNTDOWN TIMER /////////////////////////////////////////////////////////////
+   //calls the update timer function every second after the game has started
+   setInterval(updateTimer, 1000);
+   //END OF COUNTDOWN TIMER ///////////////////////////////////////////////////////////////////
 }
 
+//COUNTDOWN TIMER ///////////////////////////////////////////////////////////////
+function updateTimer(){
+//sets the minute counter to return the largest number of the remaining time divided by 60
+const minuteCounter = Math.floor(time/60);
+//sets the seconds to equal the value left after the division
+let seconds = time % 60;
+//if there is time remaining,
+if(minuteCounter != -1 && seconds != -1)
+{
+//time will be taken away every second
+time--;
+}
+//if the time runs out
+if (minuteCounter == 0 & seconds == 0)
+{
+//the window will close
+window.close();
+}
+}
+//END OF COUNTDOWN TIMER/////////////////////////////////////////////////////////
 function update() {
 ctx.clearRect(0, 20, width, height);
-console.log(health.value);
-
-if (keys[83] && player.y < (canvas.height - player.height - 100)) {
-player.velY++;
-score += 5;
-if (score >= 100)
-{
-console.log("the score "+score);
-
-showGameOverScreen();
-}
-}
-if (keys[87] && player.y > 405) {
-player.velY--;
-}
-localStorage.setItem("player x position", player.x);
-localStorage.setItem("player y position", player.y);
-localStorage.setItem("player health", health.value);
-localStorage.setItem("enemy x position", enemy.x);
+//sets the size to 30 pixels and the font to Comic Sans MS
+ctx.font = "30px Comic Sans MS";
+//sets the colour to yellow
+ctx.fillStyle = "yellow";
+//aligns the text to the centre
+ctx.textAlign - "center";
+//sets the message "score: " and the player score to be displayed at the specified position
+ctx.fillText("score: " + scoreAmount, 50, 60);
+//sets the font colour to red
+ctx.fillStyle = "red";
+//sets the message "health: " and the player health to be displayed at the specified position
+ctx.fillText("health: " + health, 1000, 60);
+//the text will be set to pink
+ctx.fillStyle = "pink";
+//sets the message "time left: " and the time amount to be displayed at the specified position
+ctx.fillText("time left: " + time, 550, 60);
+//if the ESCAPE key is pressed
 if (keys[27])
 {
-
+//the web browser window is closed
 window.close();
 }
 
+//if the S button is pressed and the player is within the vertical position range,
+if (keys[83] && player.y < (canvas.height - player.height - 100)) {
+//the player will move down the screen
+player.velY++;
+}
+
+//if the W key is pressed and the
+if (keys[87] && player.y > 405) {
+player.velY--;
+}
+
+//if the D button is pressed,
 if (keys[68] && player.x < (canvas.width - player.width - 20)) {
+//the player will be moved towards the right of the screen
 player.velX++;
-player.x ++;
 }
-
+//if the A button is pressed,
 if (keys[65] && player.x > player.width) {
+//the player will be moved towards the left of the screen
 player.velX--;
-player.x --;
 }
-
+//if the pause/play button is pressed,
 if (keys[179]){
+//the theme music will stop
 themeMusic.stop();
 }
-
+//the friction is added to movement along the axes
 player.velX *= friction;
 player.velY *= friction;
+//the velocity is added to modify the positions
 player.x += player.velX;
 player.y += player.velY;
 
 
-
+//if the movement keys are pressed,
 if (keys[65] || keys[68] || keys[83] || keys[87]) {
+//the animation frame method will be called
 animationFrame();
+//and the animation spritesheet will be played
 ctx.drawImage(img, spriteWidth * frameX, spriteHeight * frameY, spriteWidth, spriteHeight, player.x, player.y, player.width, player.height);
+scoreAmount += 5;
+//EXTENSION WORK*****************************************
+//If the current is larger than the currently saved high score,
+if(scoreAmount > localStorage.getItem("high score"))
+{
+//the new score is saved as the high score.
+localStorage.setItem("high score", scoreAmount);
+}
+//END OF EXTENSION WORK*********************************
 } else
+//the sprite is shown without animation
 ctx.drawImage(img, spriteWidth * 2, spriteHeight * 1, spriteWidth, spriteHeight, player.x, player.y, player.width, player.height);
-
-
+//draws the collectible to the screen
+ctx.drawImage(collectImage, spriteWidth * 2, spriteHeight * 1, spriteWidth, spriteHeight, collectible.x, collectible.y, collectible.width, collectible.height);
+//if the x value is larger than the width value,
 if (enemy.x > enemy.width) {
+//the enemy is animated and moves toward the left of the screen
 animationFrame();
 ctx.drawImage(enemyimg, enemySpritewidth * frameX, enemySpriteHeight * frameY, enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 enemy.velX--;
+//if not,
 } else {
+//the enemy will be displayed on screen as a stationary object
 ctx.drawImage(enemyimg,  enemySpritewidth * 2, enemySpriteHeight * 1,  enemySpritewidth, enemySpriteHeight, enemy.x, enemy.y, enemy.width, enemy.height);
 }
+//friction added to enemy movement
 enemy.velX *= friction;
 enemy.velY *= friction;
+//velocity added to the position to move the object
 enemy.x += enemy.velX;
 enemy.y += enemy.velY;
+
+//draws a green box around the player that will be used for checking collisions
 ctx.beginPath();
 ctx.lineWidth = "4";
 ctx.strokeStyle = "green";
 ctx.rect(player.x, player.y, player.width, player.height);
 ctx.stroke();
 
+//draws a green box around the enemy that will be used for checking collisions
 ctx.beginPath();
 ctx.lineWidth = "4";
 ctx.strokeStyle = "green";
 ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
 ctx.stroke();
 
-var dir = colCheck(player, enemy);
-if(dir) {
-console.log("player collide with enemy");
-if (health.value > 0)
+//draws a green box around the collectible that will be used for checking collisions
+ctx.beginPath();
+ctx.lineWidth = "4";
+ctx.strokeStyle = "red";
+ctx.rect(collectible.x, collectible.y, collectible.width, collectible.height);
+ctx.stroke();
+//checks if the player has collided with the collectible
+var collectDir = colCheck(player, collectible);
+//if it has,
+if(collectDir)
 {
-health.value -=0.5;
+//and the score is below 0,
+if(scoreAmount < 0)
+{
+//20 points will be added to score
+scoreAmount += 20;
+}
+//if the health is less than 100,
+if (health < 100)
+{
+//100 points will be added to the health
+health += 100;
+}
+//the sound effect will play
 soundEffect.play();
 }
-
-if (health.value <= 0)
+//checks the collision between the player and the enemy
+var dir = colCheck(player, enemy);
+//if a collision has taken place,
+if(dir) {
+//the console will display a message informing the user of the collision
+console.log("player collide with enemy");
+//if the health value is more than 0
+if (health > 0)
 {
+//0.5 points will be taken from the score
+health -= 0.5;
+}
+//if the health equal 0 or less,
+if(health <= 0)
+{
+//LOCAL STORAGE EXTENSION WORK/////////////////////////////
+//if the score amount is greater than the highest saved score
+if (scoreAmount > localStorage.getItem("high score"))
+{
+//the new value is set as the high score
+localStorage.setItem("high score", scoreAmount);
+}
+//sets the worst score saved as 1000 points
+localStorage.setItem("worst score ever", 1000);
+//if the current score is less than the worst score saved
+if (scoreAmount < localStorage.getItem("worst score ever"))
+{
+//the new score will be saved as the new worst score
+localStorage.setItem("worst score ever", scoreAmount);
+}
+//END OF LOCAL STORAGE EXTENSION WORK
+//the game over screen will be displayed
 showGameOverScreen();
 }
+//it subtracts 100 points from the score
+scoreAmount -= 100;
+//the sound effect will play
+soundEffect.play();
 }
 requestAnimationFrame(update);
 }
@@ -341,32 +427,39 @@ function touchXY(evt)
    lastPt = {x:evt.touches[0].pageX, y:evt.touches[0].pageY};
 }
 
+//function to show the menu
 function showMenu(){
+//loads and sets the images and position of the play button
 playImage.src = "playbutton.png";
 playImage.addEventListener('load', e => {
 ctx.drawImage(playImage, buttonX[0], buttonY[0], buttonWidth[0], buttonHeight[0]);
 });
 
+//loads the source image and position of the wasd photos
 WASD.src = "WASD.jpg";
 WASD.addEventListener('load', e => {
 ctx.drawImage(WASD, 450, 50, 150, 100)});
 
+//sets the following messages to be displayed in 30 pixel Comic Sans font at their specified locations
 ctx.font = "30px Comic Sans MS";
 ctx.fillStyle = "yellow";
 ctx.textAlign - "center";
-ctx.fillText("Tit-elle In Progress", 550, 30);
+ctx.fillText("Tit-elle In Progress", 600, 70);
 ctx.fillText(" - Moves the character", 600, 100);
 ctx.fillText(" - Main enemy", 160, 260);
 ctx.fillText(" - Main player", 560, 260);
 
+//loads the source image and position of the Alexander photo
 AlexanderMenu.src = "Alexander Menu.png";
 AlexanderMenu.addEventListener('load', e => {
 ctx.drawImage(AlexanderMenu, 50, 200, 150, 100)});
 
+//loads the source image and position of the elle photos
 ElleMenu.src="ElleMenu.png";
 ElleMenu.addEventListener('load', e => {
 ctx.drawImage(ElleMenu, 450, 200, 150, 100)});
 
+//loads and sets the images and position of the play button
 quit.src = "quitbutton.png";
 quit.addEventListener('load', e => {
 ctx.drawImage(quit, buttonX[1], buttonY[1], buttonWidth[1], buttonHeight[1]);
@@ -423,7 +516,7 @@ quitGame();
 if(mouseX > buttonX[2] && mouseX < (buttonX[2] + buttonWidth[1])){
 if(mouseY > buttonY[2] && mouseY < (buttonY[2] + buttonHeight[1]) ) {
 buttonClicked = 3;
-replay();
+showMenu();
 }
 }
 
@@ -457,19 +550,21 @@ var vX = (shapeA.x + (shapeA.width/2)) - (shapeB.x + (shapeB.width / 2)),
 function showGameOverScreen()
 {
 ctx.clearRect(0, 20, width, height);
-
+//sets the following messages to be displayed in 30 pixel Comic Sans font at their specified locations
 ctx.font = "30px Comic Sans MS";
 ctx.fillStyle = "yellow";
 ctx.textAlign - "center";
 ctx.fillText("Game Over!!!!!!!!!!!!!!!!!!", 550, 30);
 ctx.fillText(" YOU DIED", 600, 100);
-ctx.fillText("Player Score: ", 560, 260);
+ctx.fillText("Player Score: " + scoreAmount, 560, 260);
+//stops the theme music
 themeMusic.stop();
+//loads and sets the images and position of the replay button
 replayButton.src = "Replay.jpg";
 replayButton.addEventListener('load', e => {
 ctx.drawImage(replayButton, buttonX[2], buttonY[2], buttonWidth[2], buttonHeight[2]);
 });
-localStorage.setItem('score', health.value);
+//loads and sets the images and position of the quit button
 quit.src = "quitbutton.png";
 quit.addEventListener('load', e => {
 ctx.drawImage(quit, buttonX[3], buttonY[3], buttonWidth[3], buttonHeight[3]);
@@ -477,13 +572,15 @@ ctx.drawImage(quit, buttonX[3], buttonY[3], buttonWidth[3], buttonHeight[3]);
 canvas.addEventListener("mousemove", checkPos);
 canvas.addEventListener("mouseup", checkClick);
 clearInterval(interval);
-
 }
+
 
 function replay()
 {
   showMenu();
 }
+
 function quitGame(){
+//the game stops and the window closes
 window.close();
 }
